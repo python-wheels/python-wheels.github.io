@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>python-wheels</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 680px; margin: 3rem auto; line-height: 1.6; color: #1a1a1a; padding: 0 1rem; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.1rem; margin-top: 2rem; }
+      a { color: #0b5fff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      pre { background: #f5f5f5; padding: 0.75rem 1rem; border-radius: 6px; overflow-x: auto; }
+      code { background: #f5f5f5; padding: 0.15rem 0.35rem; border-radius: 4px; }
+      .pkg { margin: 0.4rem 0; }
+      footer { margin-top: 3rem; color: #888; font-size: 0.85rem; }
+    </style>
+  </head>
+  <body>
+    <h1>python-wheels</h1>
+    <p>
+      Prebuilt Python wheels for platforms upstream projects don't ship —
+      currently Windows on ARM64. Every wheel here is built in CI from a
+      pinned, verified upstream commit and signed with
+      <a href="https://www.sigstore.dev/">Sigstore</a> build attestations.
+    </p>
+
+    <h2>Use it</h2>
+    <pre>pip install --extra-index-url https://python-wheels.github.io/simple/ &lt;package&gt;</pre>
+
+    <h2>Packages</h2>
+    <div class="pkg">→ <a href="simple/dbt-oss/">dbt-oss</a> — standard OSS distribution, win_arm64</div>
+    <div class="pkg">→ <a href="simple/dbt-core/">dbt-core</a> — legacy name, being phased out upstream, win_arm64</div>
+
+    <h2>Verify a wheel yourself</h2>
+    <pre>gh attestation verify &lt;wheel&gt; --repo patrickryankenneth/python-wheels-builds</pre>
+    <p>
+      Each release records the exact upstream commit it was built from, so
+      you can independently confirm it against the real tag with
+      <code>git ls-remote</code> — see
+      <a href="https://github.com/patrickryankenneth/python-wheels-builds">python-wheels-builds</a>
+      for the build workflow.
+    </p>
+
+    <footer>
+      Source: <a href="https://github.com/python-wheels/python-wheels.github.io">python-wheels.github.io</a>
+    </footer>
+  </body>
+</html>
