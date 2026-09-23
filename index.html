@@ -1,48 +1,269 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>python-wheels</title>
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 680px; margin: 3rem auto; line-height: 1.6; color: #1a1a1a; padding: 0 1rem; }
-      h1 { font-size: 1.6rem; }
-      h2 { font-size: 1.1rem; margin-top: 2rem; }
-      a { color: #0b5fff; text-decoration: none; }
-      a:hover { text-decoration: underline; }
-      pre { background: #f5f5f5; padding: 0.75rem 1rem; border-radius: 6px; overflow-x: auto; }
-      code { background: #f5f5f5; padding: 0.15rem 0.35rem; border-radius: 4px; }
-      .pkg { margin: 0.4rem 0; }
-      footer { margin-top: 3rem; color: #888; font-size: 0.85rem; }
-    </style>
-  </head>
-  <body>
-    <h1>python-wheels</h1>
-    <p>
-      Prebuilt Python wheels for platforms upstream projects don't ship —
-      currently Windows on ARM64. Every wheel here is built in CI from a
-      pinned, verified upstream commit and signed with
-      <a href="https://www.sigstore.dev/">Sigstore</a> build attestations.
-    </p>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-wheels — verified wheels for platforms upstream won't build</title>
+<meta name="description" content="Prebuilt Python wheels for platforms upstream projects don't ship, with cryptographic build and source attestations you can verify yourself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f7f4;
+    --ink:#1c2128;
+    --ink-soft:#4b5259;
+    --rule:#d8dcd6;
+    --seal:#1f4d3d;
+    --seal-soft:#e7efe9;
+    --link:#2a4d8f;
+    --code-bg:#eceee9;
+    --max:640px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15171a;
+      --ink:#eceeec;
+      --ink-soft:#a3a9ae;
+      --rule:#33383d;
+      --seal:#5fbf9a;
+      --seal-soft:#1c2b25;
+      --link:#7ea6e8;
+      --code-bg:#1d2023;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15171a;--ink:#eceeec;--ink-soft:#a3a9ae;--rule:#33383d;
+    --seal:#5fbf9a;--seal-soft:#1c2b25;--link:#7ea6e8;--code-bg:#1d2023;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  main{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:4.5rem 1.25rem 5rem;
+  }
+  h1,h2{
+    font-family:"Source Serif 4",Georgia,serif;
+    font-weight:600;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  h1{
+    font-size:2.1rem;
+    line-height:1.25;
+    margin:0 0 0.9rem;
+  }
+  .type-cursor{
+    display:inline-block;
+    width:0.5ch;
+    background:var(--seal);
+    animation:blink 1s step-end infinite;
+  }
+  @media (prefers-reduced-motion:reduce){ .type-cursor{animation:none;} }
+  @keyframes blink{50%{opacity:0;}}
+  .lede{
+    font-size:1.05rem;
+    color:var(--ink-soft);
+    max-width:52ch;
+    margin:0 0 2.6rem;
+  }
+  .stamp{
+    display:inline-flex;
+    align-items:center;
+    gap:0.45rem;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.8rem;
+    color:var(--seal);
+    background:var(--seal-soft);
+    padding:0.3rem 0.65rem;
+    border-radius:3px;
+    margin-bottom:1.6rem;
+  }
+  .stamp svg{width:13px;height:13px;flex-shrink:0;}
 
-    <h2>Use it</h2>
-    <pre>pip install --extra-index-url https://python-wheels.github.io/simple/ &lt;package&gt;</pre>
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--rule);
+    border-radius:5px;
+    padding:0.9rem 1.1rem;
+    overflow-x:auto;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.85rem;
+    line-height:1.55;
+    color:var(--ink);
+  }
+  code{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.88em;
+    background:var(--code-bg);
+    padding:0.1rem 0.35rem;
+    border-radius:3px;
+  }
+  pre code{background:none;padding:0;}
 
+  section{margin-top:3.2rem;}
+  h2{
+    font-size:1.15rem;
+    margin:0 0 1rem;
+    padding-bottom:0.6rem;
+    border-bottom:1px solid var(--rule);
+  }
+
+  .pkg-list{list-style:none;margin:0;padding:0;}
+  .pkg-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:1rem;
+    padding:0.85rem 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .pkg-row:last-child{border-bottom:none;}
+  .pkg-name{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.95rem;
+  }
+  .pkg-name a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);}
+  .pkg-name a:hover{border-color:var(--link);color:var(--link);}
+  .pkg-meta{
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  ol.chain{
+    list-style:none;
+    counter-reset:step;
+    margin:0;
+    padding:0;
+  }
+  ol.chain li{
+    counter-increment:step;
+    position:relative;
+    padding:0 0 1.4rem 2.4rem;
+    margin-left:0.1rem;
+    border-left:1px solid var(--rule);
+  }
+  ol.chain li:last-child{padding-bottom:0;border-left-color:transparent;}
+  ol.chain li::before{
+    content:counter(step);
+    position:absolute;
+    left:-0.68rem;
+    top:0;
+    width:1.35rem;
+    height:1.35rem;
+    border-radius:50%;
+    background:var(--paper);
+    border:1px solid var(--rule);
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.75rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--ink-soft);
+  }
+  ol.chain strong{font-weight:600;}
+  ol.chain p{margin:0.3rem 0 0;color:var(--ink-soft);font-size:0.95rem;}
+
+  a{color:var(--link);}
+  p a{text-decoration-color:var(--rule);}
+
+  footer{
+    margin-top:4rem;
+    padding-top:1.4rem;
+    border-top:1px solid var(--rule);
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:0.5rem;
+  }
+  footer a{color:var(--ink-soft);}
+
+  @media (max-width:480px){
+    main{padding:3rem 1rem 4rem;}
+    h1{font-size:1.7rem;}
+    .pkg-row{flex-direction:column;align-items:flex-start;gap:0.2rem;}
+    .pkg-meta{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="stamp">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8.5L6 12.5L14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    every wheel signed &amp; verifiable
+  </div>
+
+  <h1>python&#8288;-&#8288;wheels<span class="type-cursor" aria-hidden="true">&nbsp;</span></h1>
+  <p class="lede">
+    Prebuilt wheels for platforms upstream hasn't gotten to yet. Each one is
+    built in CI from a pinned upstream commit and comes with a signed record
+    of exactly what was built and where it came from — so you can check
+    that yourself instead of taking our word for it.
+  </p>
+
+  <section id="install">
+    <h2>Install</h2>
+    <pre><code>pip install --extra-index-url https://python-wheels.github.io/simple/ &lt;package&gt;</code></pre>
+  </section>
+
+  <section id="packages">
     <h2>Packages</h2>
-    <div class="pkg">→ <a href="simple/dbt-oss/">dbt-oss</a> — standard OSS distribution, win_arm64</div>
-    <div class="pkg">→ <a href="simple/dbt-core/">dbt-core</a> — legacy name, being phased out upstream, win_arm64</div>
+    <ul class="pkg-list">
+      <li class="pkg-row">
+        <span class="pkg-name"><a href="simple/dbt-oss/">dbt-oss</a></span>
+        <span class="pkg-meta">win_arm64</span>
+      </li>
+      <li class="pkg-row">
+        <span class="pkg-name"><a href="simple/dbt-core/">dbt-core</a></span>
+        <span class="pkg-meta">win_arm64 &middot; legacy name</span>
+      </li>
+    </ul>
+  </section>
 
-    <h2>Verify a wheel yourself</h2>
-    <pre>gh attestation verify &lt;wheel&gt; --repo patrickryankenneth/python-wheels-builds</pre>
-    <p>
-      Each release records the exact upstream commit it was built from, so
-      you can independently confirm it against the real tag with
-      <code>git ls-remote</code> — see
-      <a href="https://github.com/patrickryankenneth/python-wheels-builds">python-wheels-builds</a>
-      for the build workflow.
+  <section id="verify">
+    <h2>How a wheel gets here</h2>
+    <ol class="chain">
+      <li>
+        <strong>Built from a pinned commit.</strong>
+        <p>The build workflow resolves the requested upstream git tag to an exact commit and checks it out untouched — no floating tags, no local patches.</p>
+      </li>
+      <li>
+        <strong>Attested, not just uploaded.</strong>
+        <p>Two Sigstore-signed attestations are generated per wheel: build provenance (this workflow built it, unmodified since) and upstream source (which exact upstream commit it came from).</p>
+      </li>
+      <li>
+        <strong>Verifiable by you, offline of trust.</strong>
+        <p>Before you install, or any time after, you can check both claims yourself:</p>
+        <pre><code>gh attestation verify &lt;wheel&gt; \
+  --repo patrickryankenneth/python-wheels-builds</code></pre>
+      </li>
+    </ol>
+    <p style="color:var(--ink-soft);font-size:0.92rem;margin-top:1rem;">
+      Build workflow and source: <a href="https://github.com/patrickryankenneth/python-wheels-builds">python-wheels-builds</a>.
     </p>
+  </section>
 
-    <footer>
-      Source: <a href="https://github.com/python-wheels/python-wheels.github.io">python-wheels.github.io</a>
-    </footer>
-  </body>
+  <footer>
+    <span>Source: <a href="https://github.com/python-wheels/python-wheels.github.io">python-wheels.github.io</a></span>
+    <span>MIT licensed</span>
+  </footer>
+
+</main>
+</body>
 </html>
