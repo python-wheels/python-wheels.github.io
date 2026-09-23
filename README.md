@@ -7,7 +7,7 @@ here beyond `index.html` and the generated `simple/` index.
 
 If you're looking for the actual project, you probably want one of these:
 
-- **[python-wheels/python-wheels](https://github.com/python-wheels/python-wheels)**
+- **[patrickryankenneth/python-wheels](https://github.com/patrickryankenneth/python-wheels)**
   — the `python-wheels` CLI. Wraps `pip install`, resolves the right wheel
   for your platform, and verifies its build + upstream-source attestations
   before installing. *(In progress.)*
