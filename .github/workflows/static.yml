@@ -34,11 +34,9 @@ jobs:
         env:
           REPO_NAME: ${{ github.repository }}
         run: |
-          # Pinned by wheel hash for supply-chain integrity. To update: bump the
-          # version, run `pip hash` on the new downloaded wheel, and replace the hash below.
-          pip install --require-hashes --only-binary=:all: \
-            markdown==3.7 \
-            --hash=sha256:7eb6df5690b81a1d7942992c97fad2938e956e79df20cbc6186e9c3a77b1c803
+          # Pinned by wheel hash for supply-chain integrity.
+          echo "markdown==3.7 --hash=sha256:7eb6df5690b81a1d7942992c97fad2938e956e79df20cbc6186e9c3a77b1c803" > /tmp/reqs.txt
+          pip install --require-hashes --only-binary=:all: --no-deps -r /tmp/reqs.txt
           
           python3 - << 'EOF'
           import os, shutil, subprocess, markdown
