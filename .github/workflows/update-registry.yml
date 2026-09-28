@@ -1,0 +1,81 @@
+name: update-registry
+
+# Derives registry-v2.json + simple/ from verified attestations of the
+# builds repo's published releases, commits them, and triggers the site
+# deploy. Triggers carry no trust - they only say "look again"; everything
+# is re-verified from the releases themselves, so a spoofed
+# repository_dispatch can at worst cause a no-op run.
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Verify and print the registry, write/commit nothing"
+        type: boolean
+        default: false
+  repository_dispatch:
+    types: [wheels-released]
+
+permissions:
+  contents: write
+  actions: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: update-registry
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+
+      # The prior registry is only used to skip re-verifying assets, so it
+      # is only trusted if it carries a valid attestation from this very
+      # workflow. Anything else (hand edit, first run) -> verify everything.
+      - name: Trust prior registry only if attested
+        run: |
+          if [ -f registry-v2.json ]; then
+            if ! gh attestation verify registry-v2.json --repo "$GITHUB_REPOSITORY" \
+                 --signer-workflow "${GITHUB_WORKFLOW_REF%%@*}" >/dev/null 2>&1; then
+              echo "::warning::prior registry-v2.json has no valid attestation - re-verifying everything"
+              rm registry-v2.json
+            fi
+          fi
+
+      - name: Generate registry + simple index
+        id: gen
+        run: |
+          python3 .github/scripts/generate_registry.py \
+            --policy generator-policy.json \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Attest registry-v2.json
+        if: steps.gen.outputs.changed == 'true'
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+        with:
+          subject-path: registry-v2.json
+
+      - name: Commit and deploy
+        if: steps.gen.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry-v2.json simple
+          git commit -m "registry: update from verified releases"
+          git push
+          # Pushes made with GITHUB_TOKEN don't trigger the push-based
+          # deploy, so kick it explicitly.
+          gh workflow run "Universal Site Adapter"
