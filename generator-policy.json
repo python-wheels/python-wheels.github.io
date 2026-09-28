@@ -1,0 +1,12 @@
+{
+  "builds_repo": "patrickryankenneth/python-wheels-builds",
+  "workflows": [
+    "build-dbt-oss-win-arm64.yml",
+    "build-dbt-oss-musllinux.yml"
+  ],
+  "upstream_predicate": "https://patrickryankenneth.github.io/attestations/upstream-source/v1",
+  "required_predicates": [
+    "https://slsa.dev/provenance/v1",
+    "https://patrickryankenneth.github.io/attestations/upstream-source/v1"
+  ]
+}
