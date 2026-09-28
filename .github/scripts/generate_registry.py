@@ -27,7 +27,6 @@ import shutil
 import subprocess
 import sys
 import zipfile
-from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -60,7 +59,7 @@ def parse_wheel(filename):
     if len(parts) not in (5, 6):
         return None
     return {"name": normalize(parts[0]), "version": parts[1],
-            "platform": "-".join(parts[-3:])}
+            "wheel_tag": "-".join(parts[-3:])}
 
 
 def parse_revision(tag, version):
@@ -133,11 +132,14 @@ REQUIRED_FIELDS = ("policy_version", "upstream_repo", "upstream_tag", "upstream_
 
 
 def verify_asset(repo, wheel, bundle, sha, policy):
-    """Returns (workflow_file, upstream_predicate) or None."""
+    """Returns (workflow_file, upstream_predicate, verified_predicate_types)
+    or None. The type list is what actually passed verification here, not a
+    copy of the policy file."""
     for wf in policy["workflows"]:
         signer = f"{repo}/.github/workflows/{wf}"
         upstream = None
         ok = True
+        verified = []
         for pt in policy["required_predicates"]:
             r = gh(["attestation", "verify", str(wheel), "--bundle", str(bundle),
                     "--repo", repo, "--signer-workflow", signer,
@@ -145,6 +147,7 @@ def verify_asset(repo, wheel, bundle, sha, policy):
             if r.returncode != 0:
                 ok = False
                 break
+            verified.append(pt)
             if pt == policy["upstream_predicate"]:
                 try:
                     upstream = next(walk_predicates(json.loads(r.stdout), pt), None)
@@ -153,7 +156,7 @@ def verify_asset(repo, wheel, bundle, sha, policy):
                 if upstream is None:
                     upstream = predicate_from_bundle(bundle, pt, sha)
         if ok and upstream and all(upstream.get(k) for k in REQUIRED_FIELDS):
-            return wf, upstream
+            return wf, upstream, verified
     return None
 
 
@@ -204,7 +207,7 @@ def process_release(repo, rel, prior_assets, policy, work, stats):
                 warn(f"{tag}: {name} failed attestation verification - not listed")
                 stats["refused"] += 1
                 continue
-            wf, up = result
+            wf, up, verified_types = result
             arch = assets.get(up["snapshot_archive_name"])
             if not arch:
                 warn(f"{tag}: {name} source archive {up['snapshot_archive_name']} missing - not listed")
@@ -223,14 +226,13 @@ def process_release(repo, rel, prior_assets, policy, work, stats):
             entries[name] = {
                 "name": info["name"],
                 "version": info["version"],
-                "platform": info["platform"],
+                "wheel_tag": info["wheel_tag"],
                 "sha256": sha,
                 "requires_python": (meta["Requires-Python"] or "").strip() or None,
                 "signer_workflow": f".github/workflows/{wf}",
                 "provenance": {
                     "policy_version": up["policy_version"],
-                    "predicate_types": list(policy["required_predicates"]),
-                    "verified_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "predicate_types": verified_types,
                 },
                 "upstream": {"repo": up["upstream_repo"], "tag": up["upstream_tag"],
                              "commit": up["upstream_commit"]},
