@@ -1,0 +1,96 @@
+{
+  "builds_repo": "patrickryankenneth/python-wheels-builds",
+  "releases": {
+    "dbt-oss-v2.0.5": {
+      "assets": {
+        "dbt_core-2.0.5-cp311-abi3-win_arm64.whl": {
+          "name": "dbt-core",
+          "provenance": {
+            "policy_version": "2026-09-sha-pinned-v1",
+            "predicate_types": [
+              "https://slsa.dev/provenance/v1",
+              "https://patrickryankenneth.github.io/attestations/upstream-source/v1"
+            ]
+          },
+          "requires_python": ">=3.11",
+          "sha256": "03f4b545fe2a952aedc77110356352f780cac2e366e7c11aca35febcb3e4ede1",
+          "signer_workflow": ".github/workflows/build-dbt-oss-win-arm64.yml",
+          "upstream": {
+            "commit": "a3bdd96bf62f02c8babb060a79f32de6998c235a",
+            "repo": "https://github.com/dbt-labs/dbt-oss",
+            "tag": "v2.0.5"
+          },
+          "version": "2.0.5",
+          "wheel_tag": "cp311-abi3-win_arm64"
+        },
+        "dbt_oss-2.0.5-cp311-abi3-win_arm64.whl": {
+          "name": "dbt-oss",
+          "provenance": {
+            "policy_version": "2026-09-sha-pinned-v1",
+            "predicate_types": [
+              "https://slsa.dev/provenance/v1",
+              "https://patrickryankenneth.github.io/attestations/upstream-source/v1"
+            ]
+          },
+          "requires_python": ">=3.11",
+          "sha256": "b0d2064a62a77e007c3f683a666e6d416435350a042232ef882ec3b5f56fca58",
+          "signer_workflow": ".github/workflows/build-dbt-oss-win-arm64.yml",
+          "upstream": {
+            "commit": "a3bdd96bf62f02c8babb060a79f32de6998c235a",
+            "repo": "https://github.com/dbt-labs/dbt-oss",
+            "tag": "v2.0.5"
+          },
+          "version": "2.0.5",
+          "wheel_tag": "cp311-abi3-win_arm64"
+        }
+      },
+      "revision": 0
+    },
+    "dbt-oss-v2.0.5.post1": {
+      "assets": {
+        "dbt_core-2.0.5-cp311-abi3-musllinux_1_2_x86_64.whl": {
+          "name": "dbt-core",
+          "provenance": {
+            "policy_version": "2026-09-sha-pinned-v1",
+            "predicate_types": [
+              "https://slsa.dev/provenance/v1",
+              "https://patrickryankenneth.github.io/attestations/upstream-source/v1"
+            ]
+          },
+          "requires_python": ">=3.11",
+          "sha256": "b174d64fc6ce78def546616dccef8f226d3b32847a69e747ea5b6258d675a2ed",
+          "signer_workflow": ".github/workflows/build-dbt-oss-musllinux.yml",
+          "upstream": {
+            "commit": "a3bdd96bf62f02c8babb060a79f32de6998c235a",
+            "repo": "https://github.com/dbt-labs/dbt-oss",
+            "tag": "v2.0.5"
+          },
+          "version": "2.0.5",
+          "wheel_tag": "cp311-abi3-musllinux_1_2_x86_64"
+        },
+        "dbt_oss-2.0.5-cp311-abi3-musllinux_1_2_x86_64.whl": {
+          "name": "dbt-oss",
+          "provenance": {
+            "policy_version": "2026-09-sha-pinned-v1",
+            "predicate_types": [
+              "https://slsa.dev/provenance/v1",
+              "https://patrickryankenneth.github.io/attestations/upstream-source/v1"
+            ]
+          },
+          "requires_python": ">=3.11",
+          "sha256": "12240b22fc0a0e5d87f20c9eee8ea35aea86a85dbaf4c7e37089e1e0b7dfc4b3",
+          "signer_workflow": ".github/workflows/build-dbt-oss-musllinux.yml",
+          "upstream": {
+            "commit": "a3bdd96bf62f02c8babb060a79f32de6998c235a",
+            "repo": "https://github.com/dbt-labs/dbt-oss",
+            "tag": "v2.0.5"
+          },
+          "version": "2.0.5",
+          "wheel_tag": "cp311-abi3-musllinux_1_2_x86_64"
+        }
+      },
+      "revision": 1
+    }
+  },
+  "schema": 2
+}
